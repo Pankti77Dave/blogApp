@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Search| {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="blog-item">
+        <h1>Search results</h1>
+        <h3>Query "{{ query }}"</h3>
+    </div>
+    <div class="blogs-wrapper">
+        {% for post in posts %}
+        <div class="blog-item">
+            
+            <div class="blog-item-inner">
+                <a href="{% url 'post_detail' post.id %}">
+                    <h2>{{ post.title }}</h2>
+                    <p>{{ post.intro }}</p>
+                    <p>{{ post.created_at|date:'M-d-Y H:i' }}</p>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-results">
+            <p>no results available</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

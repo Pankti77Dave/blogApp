@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% if uname != None %}
+<div class="container">
+    <h1>Add post</h1>
+
+    <form id="addForm" action="/create/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{BlogForm}}
+
+        <div class="modal-footer">
+            <input type="button" class="btn btn-default clear-add-form" data-dismiss="modal" value="Cancel">
+            <input type="submit" class="btn btn-success" value="Add">
+        </div>
+    </form>
+</div>
+{%else%}
+you're not allowed here!
+{% endif %}
+{% endblock %}

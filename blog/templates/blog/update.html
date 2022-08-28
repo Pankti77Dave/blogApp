@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h1>update post</h1>
+
+<form id="updateForm" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if uname != None %}
+    {{UpdateForm}}
+    <div class="modal-footer">
+        <input type="button" class="btn btn-default clear-add-form" data-dismiss="modal" value="Cancel">
+        <input type="submit" class="btn btn-success" value="Add">
+    </div>
+    {% else %}
+    Not Allow
+    {%endif%}
+    
+</form>
+
+{% endblock %}

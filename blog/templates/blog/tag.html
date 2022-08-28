@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ tag.title }} | {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="blogs-wrapper">
+        {% for post in tag.posts.all %}
+        <div class="blog-item">
+            
+            <div class="blog-item-inner">
+                <a href="{% url 'post_detail' post.id  %}">
+                    <h2>{{ post.title }}</h2>
+                    <p>{{ post.intro }}</p>
+                    <p>{{ post.created_at|date:'M-d-Y H:i' }}</p>
+                </a>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home | {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="blogs-wrapper">
+        {% for post in posts %}
+        <div class="blog-item">
+            
+            <div class="blog-item-inner">
+                 <a href="{% url 'post_detail' post.id %}"> 
+                    {% if post.image %}
+                    <figure class="image">
+                        <img src="{{ post.image.url }}" alt="">
+                    </figure>
+                    {% endif %}
+                    <div class="content-block">
+                        <h2>{{ post.title }}</h2>
+                        <p>{{ post.intro }}</p>
+                        <p>{{ post.created_at|date:'M-d-Y H:i' }}</p>
+                        <p>Pub By: {{ post.uname }}</p>
+                    </div>
+                </a>
+                <div class="btn-wrapper">
+                    
+                    <p>{{uname}} {{post.uname}}</p>
+                   
+                    {% if uname == post.uname.uname %}
+                   
+                    <a class="btn btn-primary" href="{% url 'update' post.id %}" onclick="return confirm('Are you sure you want to edit this post?')">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'delete' post.id %}" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+
+                    {% endif %}
+                    
+                </div>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

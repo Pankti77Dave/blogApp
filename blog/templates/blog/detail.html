@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ post.title }} | {% endblock %}
+
+{%block content %}
+<div class="container">
+    <div class="blog-item">          
+        <div class="blog-item-inner">
+                {% if post.image %}
+                <figure class="image">
+                    <img src="{{ post.image.url }}" alt="">
+                </figure>
+                {% endif %}
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.intro }}</p>
+                <p>{{ post.created_at|date:'M-d-Y H:i' }}</p>
+                <p>{{ post.body }}</p>
+    
+                <p><small>Tags:    <a href="{% url 'tag_detail' post.tag.slug %}">{{ post.tag }}</a></small></p>
+               {% if uname != None %} 
+                <div class="comment-block">
+                    {% for comment in comments %} 
+                    <p>{{ comment.detail }}</p>
+                    <a href="{% url 'deletecomment' post.id comment.id  %}">Delete comment</a>
+                    {% endfor %}
+                </div>
+                
+                <div class="comment-section">
+                    <form action="/{{ post.id }}/createcomment/" method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="field">
+                            <div class="control">
+                                <button class="btn btn-success" type="submit" >
+                                    Submit comment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    {% for comment in posts.comments.all %}
+    
+                        <article class="media">
+                            <div class="media-content">
+                                <strong>{{ comment.name}}</strong>
+                                <small>{{ comment.created_at|timesince }} ago</small>
+                                {{ comment.body }}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+                {%endif%}
+        </div>   
+    </div>
+</div>
+
+{% endblock %}
