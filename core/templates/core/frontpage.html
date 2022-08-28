@@ -24,9 +24,6 @@
                     </div>
                 </a>
                 <div class="btn-wrapper">
-                    
-                    <p>{{uname}} {{post.uname}}</p>
-                   
                     {% if uname == post.uname.uname %}
                    
                     <a class="btn btn-primary" href="{% url 'update' post.id %}" onclick="return confirm('Are you sure you want to edit this post?')">Edit</a>

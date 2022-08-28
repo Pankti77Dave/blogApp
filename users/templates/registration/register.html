@@ -4,9 +4,14 @@
 
 <h1>Register</h1>
 <div class="form-group">
+    {{ msg }}
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
+        <p>
+            <label for="id_cupassword">Confirm U password:</label>
+            <input type="password" name="cupassword" class="form-control" maxlength="40" required="" id="id_upassword">  
+          </p>
         <button class="btn btn-primary">Register</button>
     </form>
 </div>

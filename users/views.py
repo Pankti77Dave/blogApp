@@ -2,13 +2,33 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from .forms import UserLogin
+from .forms import UserLogin, UserRegister
 from .models import BlogUser
 
-class UserRegisterView(generic.CreateView):
-    form_class = UserCreationForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('login')
+def register(request):
+    register_form = UserRegister()
+    if request.method=="POST":
+        
+        udata=UserRegister(request.POST)
+        if udata.is_valid():
+            #  to insert all data to db
+            # sdata.save()
+            # particular data to db
+
+            ue=udata.cleaned_data['uname']
+            up=udata.cleaned_data['upassword']
+            cup= request.POST.get('cupassword')
+            message = ''
+            if up == cup:
+                add=BlogUser(uname=ue, upassword=up) 
+                add.save()
+                message = 'user registered successfully'   
+            else:
+                message = 'passwords do not match'
+            return render(request, 'registration/register.html', {'form': register_form, 'msg': message})    
+                
+            
+    return render(request, 'registration/register.html', {'form': register_form})    
 
 def login(request):
     

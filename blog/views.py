@@ -4,6 +4,7 @@ from gc import get_objects
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import BlogForm, CommentForm, UpdateForm
 from .models import Post, Tag, Comment, User
+from users.models import BlogUser
 
 def detail(request, id):
     post = Post.objects.get(id=id)
@@ -32,7 +33,8 @@ def search(request):
     query = request.GET.get('query', '')
 
     posts = Post.objects.filter(Q(title__icontains=query) | Q(intro__icontains=query) | Q(body__icontains=query))
-
+    if 'uname' in request.session:
+        return render(request, 'blog/search.html', {'posts': posts, 'query': query,'uname':request.session['uname'] })
     return render(request, 'blog/search.html', {'posts': posts, 'query': query})
 
 def add(request):
@@ -41,13 +43,20 @@ def add(request):
     return render(request, 'blog/add.html', { 'BlogForm': BlogForm})
 
 def create(request):
-    form = BlogForm(request.POST)
-    obj = form.save(commit=False)
-    obj.slug = 'text' 
-    obj.save()
-
-    return redirect( '/')
-
+    if request.method=="POST" and ('uname' in request.session):
+        form = BlogForm(request.POST) 
+        if form.is_valid():
+            tag=form.cleaned_data['tag']
+            title=form.cleaned_data['title']
+            intro=form.cleaned_data['intro']
+            body=form.cleaned_data['body']
+            uname=BlogUser.objects.get(uname=request.session['uname'])
+            add=Post(tag=tag,title=title,intro=intro,body=body,slug=title,uname=uname) 
+            add.save()
+            return redirect( '/')
+        else:
+            return redirect( '/')
+            
 def update(request, id):
     post = Post.objects.get(id=id)
     if request.method == 'POST':
