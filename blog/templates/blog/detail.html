@@ -16,7 +16,7 @@
                 <p>{{ post.created_at|date:'M-d-Y H:i' }}</p>
                 <p>{{ post.body }}</p>
     
-                <p><small>Tags:    <a href="{% url 'tag_detail' post.tag.slug %}">{{ post.tag }}</a></small></p>
+                <p><small>Tags:    <a href="{% url 'tag_detail' post.id %}">{{ post.tag }}</a></small></p>
                {% if uname != None %} 
                 <div class="comment-block">
                     {% for comment in comments %} 

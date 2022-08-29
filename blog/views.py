@@ -5,37 +5,48 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .forms import BlogForm, CommentForm, UpdateForm
 from .models import Post, Tag, Comment, User
 from users.models import BlogUser
+from django.views.generic import TemplateView, ListView
 
-def detail(request, id):
-    post = Post.objects.get(id=id)
-    comment = Comment.objects.filter(post_id=id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
+class BlogDetail(TemplateView):
+    template_name = 'blog/detail.html'
+    def get(self, request, id):
+        post = Post.objects.get(id=id)
+        comment = Comment.objects.filter(post_id=id)
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
 
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.save()
 
-            return redirect('post_detail', id=id)
-    else:
-        form = CommentForm()
-    if 'uname' in request.session:
-        return render(request, 'blog/detail.html', {'post': post, 'form': form, 'comments': comment,'uname':request.session['uname']})
-    return render(request, 'blog/detail.html', {'post': post, 'form': form, 'comments': comment})
+                return redirect('post_detail', id=id)
+        else:
+            form = CommentForm()
+        if 'uname' in request.session:
+            return render(request, 'blog/detail.html', {'post': post, 'form': form, 'comments': comment,'uname':request.session['uname']})
+        return render(request, 'blog/detail.html', {'post': post, 'form': form, 'comments': comment})
+
 def tag(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
 
     return render(request, 'blog/tag.html', {'tag': tag})
 
+class BlogSearch(ListView):
+    template_name = 'blog/search.html'
+    model = Post
+    def get(self, request, *args, **kwargs):
+            # <process form cleaned data>
+        blogquery=request.GET.get("query")
+        print(f"\n\n\n\n\n{blogquery}\n\n\n\n\n")
+        posts = Post.objects.filter(Q(title__icontains=blogquery) | Q(intro__icontains=blogquery) | Q(body__icontains=blogquery))
+        print(f"\n\n\n\n\n{posts}\n\n\n\n\n")
+        if 'uname' in request.session:
+            return render(request, self.template_name, {'posts': posts, 'query': blogquery,'uname':request.session['uname'] })
+        return render(request, self.template_name, {'posts': posts, 'query': blogquery})
 
-def search(request):
-    query = request.GET.get('query', '')
 
-    posts = Post.objects.filter(Q(title__icontains=query) | Q(intro__icontains=query) | Q(body__icontains=query))
-    if 'uname' in request.session:
-        return render(request, 'blog/search.html', {'posts': posts, 'query': query,'uname':request.session['uname'] })
-    return render(request, 'blog/search.html', {'posts': posts, 'query': query})
+
 
 def add(request):
     if 'uname' in request.session:
